@@ -1,0 +1,27 @@
+cabal-version:      3.4
+name:               submission
+version:            0.1.0.0
+synopsis:           A Haskell program submitted to AtCoder
+-- description:
+license:            NONE
+author:             submitter-anonymous
+maintainer:         NONE
+-- copyright:
+category:           Competitive
+build-type:         Simple
+-- extra-doc-files:    CHANGELOG.md
+-- extra-source-files:
+
+common warnings
+    ghc-options: -Wall
+
+executable main
+    import:           warnings
+    main-is:          Main.hs
+    -- other-modules:
+    -- other-extensions:
+    build-depends:
+REPLACE_CABAL_BUILD_DEPENDS
+
+    hs-source-dirs:   app
+    default-language: GHC2021

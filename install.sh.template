@@ -1,0 +1,30 @@
+#! /bin/bash
+
+sudo apt-get update
+sudo apt-get upgrade -y
+apt-get install -y build-essential curl libffi-dev libffi8ubuntu1 libgmp-dev libgmp10 libncurses-dev libncurses5 libtinfo5 llvm-13
+
+curl --proto '=https' --tlsv1.2 -sSf https://get-ghcup.haskell.org | BOOTSTRAP_HASKELL_NONINTERACTIVE=1 BOOTSTRAP_HASKELL_GHC_VERSION=REPLACE_GHCVER BOOTSTRAP_HASKELL_CABAL_VERSION=REPLACE_CABALVER BOOTSTRAP_HASKELL_INSTALL_NO_STACK=1 sh
+source .ghcup/env
+
+mkdir -p submission/app
+
+cd submission
+
+cat > submission.cabal <<'PKG_CABAL_EOF'
+REPLACE_PKG_CABAL
+
+PKG_CABAL_EOF
+
+cat > cabal.project <<'CABAL_PROJECT_EOF'
+REPLACE_CABAL_PROJECT
+
+CABAL_PROJECT_EOF
+
+echo "main = return () :: IO ()" > app/Main.hs
+
+cabal v2-update
+cabal v2-freeze
+cabal v2-build --only-dependencies
+
+rm app/Main.hs

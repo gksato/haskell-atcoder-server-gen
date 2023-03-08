@@ -1,0 +1,10 @@
+packages: ./submission.cabal
+
+constraints: bitvec +libgmp,
+             clock +llvm,
+             vector-algorithms +llvm
+optimization: 2
+
+package *
+    compiler: ghc
+    ghc-options: -fllvm -Wall
