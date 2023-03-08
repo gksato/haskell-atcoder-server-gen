@@ -21,7 +21,7 @@ executable main
     -- other-modules:
     -- other-extensions:
     build-depends:
-REPLACE_CABAL_BUILD_DEPENDS
+                  REPLACE_CABAL_BUILD_DEPENDS
 
     hs-source-dirs:   app
     default-language: GHC2021
