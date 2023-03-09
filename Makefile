@@ -7,12 +7,13 @@ artifacts/submission.cabal: \
 		submission.cabal.template \
 		dependencies
 	mkdir -p artifacts
+	mkdir -p tmp
 	sed -e 's/^/                  /' -e '$$!s/$$/,/' dependencies \
-		> temp_dependencies
-	sed -e '/REPLACE_CABAL_BUILD_DEPENDS/r temp_dependencies' \
+		> tmp/build_depends
+	sed -e '/REPLACE_CABAL_BUILD_DEPENDS/r tmp/build_depends' \
 		-e '//d' \
 		submission.cabal.template > artifacts/submission.cabal
-	rm temp_dependencies
+	rm tmp/build_depends
 
 submission.cabal: artifacts/submission.cabal
 
