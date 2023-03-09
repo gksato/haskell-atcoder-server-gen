@@ -20,7 +20,6 @@ submission.cabal: artifacts/submission.cabal
 artifacts/install.sh: \
 		artifacts/submission.cabal \
 		cabal.project
-	mkdir -p artifacts
 	sed -e '/REPLACE_PKG_CABAL/r artifacts/submission.cabal' \
 		-e '//d' \
 		-e '/REPLACE_CABAL_PROJECT/r cabal.project' \
