@@ -3,11 +3,17 @@
 module FetchCabal where
 
 import Network.HTTP.Types.Header ( hAccept )
-import Network.HTTP.Client.TLS
 import Network.HTTP.Client
+    ( Request(checkResponse, requestHeaders),
+      Response(responseBody),
+      Manager,
+      brConsume,
+      httpLbs,
+      withResponse,
+      parseRequest,
+      throwErrorStatusCodes )
 import Data.ByteString ( ByteString )
 import qualified Data.ByteString as BS
-import qualified Data.ByteString.Lazy.Char8 as BSL
 import Control.Monad.Catch ( Exception, MonadThrow(..) )
 import Distribution.Types.GenericPackageDescription (GenericPackageDescription)
 import Distribution.PackageDescription.Parsec (parseGenericPackageDescription, runParseResult)
@@ -23,7 +29,6 @@ import Distribution.PackageDescription.Configuration (finalizePD)
 import Data.Bifunctor (Bifunctor(first))
 import Data.Either (fromRight)
 import Data.Map (Map)
-import qualified Data.Map.Strict as Map
 import Data.Aeson.TH (Options(..), deriveJSON, defaultOptions)
 import Data.Char (toLower)
 import Data.Aeson (decode)
@@ -68,6 +73,7 @@ askHackageForGPD mgr pkg ver = do
   case parseRes of
     Left (mver, errors) -> throwM $ CabalParseError mver errors warns
     Right res -> return (res, warns)
+
 
 platformLinuxX64 :: Platform
 platformLinuxX64 = Platform X86_64 Linux

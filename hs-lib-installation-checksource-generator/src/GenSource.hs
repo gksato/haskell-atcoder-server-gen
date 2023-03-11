@@ -2,10 +2,8 @@ module GenSource where
 import Distribution.Types.PackageDescription (PackageDescription(package, library, licenseFiles), license)
 import Distribution.Types.Library (Library(exposedModules))
 import qualified Data.Text.Lazy as TLazy
-import qualified Data.Text.Lazy.IO as TLazy
 import qualified Data.Text.Lazy.Builder as TLazyB
 import Distribution.Pretty ( prettyShow )
-import Data.List (intersperse)
 import Distribution.Types.PackageId (PackageIdentifier(..))
 
 genSourceWithExposedImports
@@ -47,7 +45,7 @@ genLicenses packages = TLazyB.toLazyText
      <> TLazyB.singleton '('
      <> TLazyB.fromString (prettyShow $ license descr)
      <> TLazyB.fromString "): "
-     <> foldr (\ path rest -> urlprefix <> TLazyB.fromString (prettyShow path) <> TLazyB.singleton ',' <> rest)
+     <> foldr (\ path rest' -> urlprefix <> TLazyB.fromString (prettyShow path) <> TLazyB.singleton ',' <> rest')
         (newLine <> rest)
         (licenseFiles descr))
   mempty
