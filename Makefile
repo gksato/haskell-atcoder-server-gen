@@ -83,7 +83,7 @@ serverproto_main_dist := \
 
 $(serverproto_main_dist): \
 		$(serverproto_main)
-	mkdir -p dist/serverproto
+	@mkdir -p dist/serverproto
 	cp $(serverproto_main) $(serverproto_main_dist)
 
 .PHONY: $(serverproto_main_fname)
@@ -96,7 +96,7 @@ $(addprefix serverproto/,$(serverproto_main_fname)): $(serverproto_main_dist)
 
 dist/serverproto/cabal.project: \
 		src/serverproto/cabal.project
-	mkdir -p dist/serverproto
+	@mkdir -p dist/serverproto
 	cp src/serverproto/cabal.project dist/serverproto/cabal.project
 
 .PHONY: cabal.project
@@ -110,8 +110,8 @@ serverproto/cabal.project: dist/serverproto/cabal.project
 dist/serverproto/submission.cabal: \
 		src/serverproto/submission.cabal.template \
 		src/serverproto/dependencies
-	mkdir -p tmp
-	mkdir -p dist/serverproto
+	@mkdir -p tmp
+	@mkdir -p dist/serverproto
 	sed -e 's/^/                  /' -e '$$!s/$$/,/' \
 		src/serverproto/dependencies \
 		> tmp/build_depends
