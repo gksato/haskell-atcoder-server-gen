@@ -64,3 +64,11 @@ askHackageForUnitPD mgr pj unit = do
         $ finalizePDWithPlan pj unit gpd
   return (res, fa', warns)
 
+askHackageForUnitPD'
+  :: Manager
+  -> PlanJson
+  -> Plan.Unit
+  -> IO PackageDescription
+askHackageForUnitPD' mgr pj unit = do
+  (res, _, _) <- askHackageForUnitPD mgr pj unit
+  return res

@@ -11,7 +11,7 @@ cabal-version:      3.0
 --   http://haskell.org/cabal/users-guide/
 --
 -- The name of the package.
-name:               hs-lib-installation-checksource-generator
+name:               checksource-gen
 
 -- The package version.
 -- See the Haskell package versioning policy (PVP) for standards
@@ -55,9 +55,18 @@ extra-doc-files:    CHANGELOG.md
 common warnings
     ghc-options: -Wall
 
+common dependencies
+    build-depends:
+        base ^>=4.17.0.0,
+        http-client-tls ^>=0.3.6.1,
+        cabal-plan ^>=0.7.2.3,
+        containers ^>=0.6.7,
+        text ^>=2.0.1
+
 library
     -- Import common warning flags.
-    import:           warnings
+    import:           warnings,
+                      dependencies
 
     -- Modules exported by the library.
     exposed-modules:
@@ -73,18 +82,13 @@ library
 
     -- Other library packages from which modules are imported.
     build-depends:
-        base ^>=4.17.0.0,
         http-client ^>=0.7.13.1,
-        http-client-tls ^>=0.3.6.1,
         http-conduit ^>=2.3.8,
         http-types ^>=0.12.3,
         exceptions ^>=0.10.5,
         Cabal-syntax ^>=3.8.1.0,
         bytestring ^>=0.11.4.0,
-        text ^>=2.0.1,
-        aeson ^>=2.1.1,
-        containers ^>=0.6.7,
-        cabal-plan ^>=0.7.2.3
+        aeson ^>=2.1.1
 
     default-extensions:
         OverloadedStrings
@@ -95,9 +99,10 @@ library
     -- Base language which the package is written in.
     default-language: GHC2021
 
-executable hs-lib-installation-checksource-generator
+executable checksource-gen
     -- Import common warning flags.
-    import:           warnings
+    import:           warnings,
+                      dependencies
 
     -- .hs or .lhs file containing the Main module.
     main-is:          Main.hs
@@ -110,8 +115,8 @@ executable hs-lib-installation-checksource-generator
 
     -- Other library packages from which modules are imported.
     build-depends:
-        base ^>=4.17.0.0,
-        hs-lib-installation-checksource-generator
+        checksource-gen
+
 
     -- Directories containing source files.
     hs-source-dirs:   app
@@ -144,4 +149,4 @@ test-suite hs-lib-installation-checksource-generator-test
     -- Test dependencies.
     build-depends:
         base ^>=4.17.0.0,
-        hs-lib-installation-checksource-generator
+        checksource-gen
