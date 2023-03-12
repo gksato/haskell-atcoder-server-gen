@@ -1,3 +1,5 @@
+.DELETE_ON_ERROR:
+
 # Versions of GHC and cabal-install. See ghcup_apt_dependency.
 
 ghcver = 9.4.4
@@ -14,21 +16,7 @@ ghcup_apt_dependency = build-essential curl libffi-dev libffi8ubuntu1 \
 # default username for docker images. THIS CANNOT BE root.
 ghcup_user = runner
 
-# Dummy files for Docker image.
-# The file with name dummyname_*** exists,
-# iff the docker image imgname_*** exists.
-# The modification date of the former is the same as the creation date
-# of the latter.
 
-dummyname_ghcup = tmp/ghcup/.dockerimg_dummy
-imgname_ghcup = haskell-atcoder-server-gen/ghcup:autogen
-DUMMYVAR := $(shell ./touch_dummy_for_dockerimg.sh \
-	"$(dummyname_ghcup)" "$(imgname_ghcup)")
-
-dummyname_serverproto = tmp/serverproto/.dockerimg_dummy
-imgname_serverproto = haskell-atcoder-server-gen/serverproto:autogen
-DUMMYVAR := $(shell ./touch_dummy_for_dockerimg.sh \
-	"$(dummyname_serverproto)" "$(imgname_serverproto)")
 
 
 # Clear all
@@ -42,33 +30,55 @@ clear-all: ghcup/docker-image-clear serverproto/docker-image-clear
 
 # GHCup target
 
-
-$(dummyname_ghcup): \
+dist/ghcup/Dockerfile: \
 		src/ghcup/Dockerfile
+	mkdir -p dist/ghcup
+	cp src/ghcup/Dockerfile dist/ghcup/Dockerfile
+
+
+DUMMY := $(shell test ! -e dist/ghcup/docker-image-name || \
+	(cat dist/ghcup/docker-image-name | xargs -I {} \
+	docker image inspect {} > /dev/null 2>&1) || \
+	rm -f dist/ghcup/docker-image-name)
+
+dist/ghcup/docker-image-name: \
+		dist/ghcup/Dockerfile
+	echo "haskell-atcoder-server-gen/ghcup-autogen:$$(uuidgen)" \
+	> dist/ghcup/docker-image-name
+
+	cat dist/ghcup/docker-image-name
+
 	docker image build \
-		-t $(imgname_ghcup) \
-		--build-arg GHCVER="$(ghcver)" \
-		--build-arg CABALVER="$(cabalver)" \
-		--build-arg USERNAME="$(ghcup_user)" \
-		--build-arg GHCUP_APT_DEPENDENCY="$(ghcup_apt_dependency)" \
-		src/ghcup
-	@./touch_dummy_for_dockerimg.sh \
-		"$(dummyname_ghcup)" "$(imgname_ghcup)"
+	-t "$$(cat dist/ghcup/docker-image-name)" \
+	--build-arg GHCVER="$(ghcver)" \
+	--build-arg CABALVER="$(cabalver)" \
+	--build-arg USERNAME="$(ghcup_user)" \
+	--build-arg GHCUP_APT_DEPENDENCY="$(ghcup_apt_dependency)" \
+	dist/ghcup
 
 .PHONY: ghcup
-ghcup: $(dummyname_ghcup)
+ghcup: dist/ghcup/docker-image-name
 
 .PHONY: ghcup/docker-image
-ghcup/docker-image: $(dummyname_ghcup)
+ghcup/docker-image: dist/ghcup/docker-image-name
 
 .PHONY: ghcup/docker-image-clear
-ghcup/docker-image-clear:
-	docker image rm $(imgname_ghcup) || echo "No image to remove"
-	@./touch_dummy_for_dockerimg.sh \
-		"$(dummyname_ghcup)" "$(imgname_ghcup)"
+ghcup/docker-image-unlink:
+	rm -f dist/ghcup/docker-image-name
+
+	@echo "No docker image for GHCup is connected to this Makefile \
+	any longer, if there were any."
+
+	@echo "This does not try to delete images, \
+	so you have to do it yourself if you want to!"
+
+	@echo "GHCup images have the following repository name:"
+
+	@echo "  haskell-atcoder-server-gen/ghcup-autogen"
+
 
 .PHONY: ghcup/clear
-ghcup/clear: ghcup/docker-image-clear
+ghcup/clear: ghcup/docker-image-unlink
 
 
 
@@ -112,13 +122,16 @@ dist/serverproto/submission.cabal: \
 		src/serverproto/dependencies
 	@mkdir -p tmp
 	@mkdir -p dist/serverproto
+
 	sed -e 's/^/                  /' -e '$$!s/$$/,/' \
-		src/serverproto/dependencies \
-		> tmp/build_depends
+	src/serverproto/dependencies \
+	> tmp/build_depends
+
 	sed -e '/REPLACE_CABAL_BUILD_DEPENDS/r tmp/build_depends' \
-		-e '//d' \
-		src/serverproto/submission.cabal.template \
-		> dist/serverproto/submission.cabal
+	-e '//d' \
+	src/serverproto/submission.cabal.template \
+	> dist/serverproto/submission.cabal
+
 	rm tmp/build_depends
 
 .PHONY: submission.cabal
@@ -139,32 +152,44 @@ serverproto/Dockerfile: \
 		dist/serverproto/Dockerfile
 
 
+DUMMY := $(shell test ! -e dist/serverproto/docker-image-name || \
+	docker image inspect $$(cat dist/serverproto/docker-image-name) \
+	> /dev/null 2>&1 || \
+	rm -f dist/serverproto/docker-image-name)
 
-$(dummyname_serverproto): \
+
+dist/serverproto/docker-image-name: \
 		dist/serverproto/Dockerfile \
 		dist/serverproto/submission.cabal \
 		dist/serverproto/cabal.project \
 		$(serverproto_main_dist) \
-		$(dummyname_ghcup)
+		dist/ghcup/docker-image-name
+	echo "haskell-atcoder-server-gen/serverproto-autogen:$$(uuidgen)" \
+	> dist/serverproto/docker-image-name
+
 	docker image build \
-		-t $(imgname_serverproto) \
-		--build-arg GHCUP_IMG="$(imgname_ghcup)" \
-		--build-arg DEFAULT_MAIN_FILE="$(serverproto_main_fname)" \
-		dist/serverproto
-	@./touch_dummy_for_dockerimg.sh \
-		"$(dummyname_serverproto)" "$(imgname_serverproto)"
+	-t $$(cat dist/serverproto/docker-image-name) \
+	--build-arg GHCUP_IMG=\
+	"$$(cat dist/ghcup/docker-image-name)" \
+	--build-arg DEFAULT_MAIN_FILE="$(serverproto_main_fname)" \
+	dist/serverproto
 
 .PHONY: serverproto
-serverproto: $(dummyname_serverproto)
+serverproto: dist/serverproto/docker-image-name
 
 .PHONY: serverproto/docker-image
-serverproto/docker-image: $(dummyname_serverproto)
+serverproto/docker-image: dist/serverproto/docker-image-name
 
 .PHONY: serverproto/docker-image-clear
 serverproto/docker-image-clear:
-	docker image rm $(imgname_serverproto) || echo "No image to remove"
-	@./touch_dummy_for_dockerimg.sh \
-		"$(dummyname_serverproto)" "$(imgname_serverproto)"
+	rm -f dist/serverproto/docker-image-name
+
+	@echo "No docker image for server prototype is connected to this \
+	Makefile any longer, if there were any."
+	@echo "This does not try to delete images, \
+	so you have to do it yourself if you want to!"
+	@echo "Server prototype images have the following repository name:"
+	@echo "  haskell-atcoder-server-gen/serverproto-autogen"
 
 
 
@@ -182,15 +207,16 @@ dist/installsteps/install.sh: \
 		dist/serverproto/cabal.project \
 		src/installsteps/install.sh.template
 	mkdir -p dist/installsteps
+
 	sed -e '/REPLACE_CABAL_PROJECT/r dist/serverproto/cabal.project' \
-		-e '//d' \
-		-e '/REPLACE_PKG_CABAL/r dist/serverproto/submission.cabal' \
-		-e '//d' \
-		-e 's/REPLACE_GHCVER/$(ghcver)/' \
-		-e 's/REPLACE_CABALVER/$(cabalver)/' \
-		-e 's/REPLACE_GHCUP_APT_DEPENDENCY/$(ghcup_apt_dependency)/' \
-		src/installsteps/install.sh.template \
-		> dist/installsteps/install.sh
+	-e '//d' \
+	-e '/REPLACE_PKG_CABAL/r dist/serverproto/submission.cabal' \
+	-e '//d' \
+	-e 's/REPLACE_GHCVER/$(ghcver)/' \
+	-e 's/REPLACE_CABALVER/$(cabalver)/' \
+	-e 's/REPLACE_GHCUP_APT_DEPENDENCY/$(ghcup_apt_dependency)/' \
+	src/installsteps/install.sh.template \
+	> dist/installsteps/install.sh
 
 .PHONY: install.sh
 install.sh: dist/installsteps/install.sh
