@@ -256,9 +256,10 @@ dist/toolgen/build-container: dist/toolgen/build-container-id
 .PHONY: toolgen/build-container
 toolgen/build-container: dist/toolgen/build-container-id
 
-
+.SECONDARY: dist/toolgen/cabal-plan
 dist/toolgen/cabal-plan: \
 		dist/toolgen/build-container-id
+	mkdir -p dist/toolgen
 	docker container start \
 	$(shell cat dist/toolgen/build-container-id)
 
@@ -295,6 +296,7 @@ dist/toolgen/checksource-gen: \
 		dist/toolgen/build-container-id \
 		$(CHECKSOURCEGEN_SOURCE) \
 		checksource-gen/checksource-gen.cabal
+	mkdir -p dist/toolgen
 	docker container cp \
 	checksource-gen/. \
 	$(shell cat dist/toolgen/build-container-id)\
