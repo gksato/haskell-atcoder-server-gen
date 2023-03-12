@@ -236,6 +236,11 @@ installsteps/clear:
 
 # toolgen target
 
+DUMMY := $(shell test ! -e dist/toolgen/build-container-id || \
+	docker container inspect $$(cat dist/toolgen/build-container-id) \
+	> /dev/null 2>&1 || \
+	rm -f dist/ghcup/build-container-id)
+
 .SECONDARY: dist/toolgen/build-container-id
 dist/toolgen/build-container-id: \
 		dist/ghcup/docker-image-name
