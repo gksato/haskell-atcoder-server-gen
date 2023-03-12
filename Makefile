@@ -234,6 +234,53 @@ installsteps/clear:
 	rm -rf dist/installsteps
 
 
+# toolgen target
+
+.SECONDARY: dist/toolgen/build-container-id
+dist/toolgen/build-container-id: \
+		dist/ghcup/docker-image-name
+	mkdir -p dist/toolgen
+	docker container create -it \
+	--name "haskell-atcoder-server-gen/toolgen-autogen:$$(uuidgen)" \
+	$(shell cat dist/ghcup/docker-image-name) \
+	> dist/toolgen/build-container-id
+
+.PHONY: dist/toolgen/build-container
+dist/toolgen/build-container: dist/toolgen/build-container-id
+
+.PHONY: toolgen/build-container
+toolgen/build-container: dist/toolgen/build-container-id
+
+
+dist/toolgen/cabal-plan: \
+		dist/toolgen/build-container-id
+	docker container start \
+	$(shell cat dist/toolgen/build-container-id)
+
+	docker container exec --user=root \
+	$(shell cat dist/toolgen/build-container-id) \
+	apt-get install -y zlib1g-dev
+
+	docker container exec \
+	$(shell cat dist/toolgen/build-container-id) \
+	cabal v2-install cabal-plan \
+	--flag="+license-report" \
+	--install-method=copy --overwrite-policy=always
+
+	docker container cp \
+	$(shell cat dist/toolgen/build-container-id)\
+	:/home/$(ghcup_user)/.cabal/bin/cabal-plan \
+	dist/toolgen/cabal-plan
+
+	docker container stop \
+	$(shell cat dist/toolgen/build-container-id)
+
+.PHONY: toolgen/cabal-plan
+toolgen/cabal-plan: dist/toolgen/cabal-plan
+
+.PHONY: cabal-plan
+cabal-plan: dist/toolgen/cabal-plan
 
 .PHONY: donothing
 donothing:
+
