@@ -281,6 +281,47 @@ toolgen/cabal-plan: dist/toolgen/cabal-plan
 .PHONY: cabal-plan
 cabal-plan: dist/toolgen/cabal-plan
 
+CHECKSOURCEGEN_SOURCE := \
+	$(shell find checksource-gen/src \
+	checksource-gen/app \
+	checksource-gen/test -name '*.hs')
+
+dist/toolgen/checksource-gen: \
+		dist/toolgen/build-container-id \
+		$(CHECKSOURCEGEN_SOURCE) \
+		checksource-gen/checksource-gen.cabal
+	docker container cp \
+	checksource-gen/. \
+	$(shell cat dist/toolgen/build-container-id)\
+	:/home/$(ghcup_user)/checksource-gen
+
+	docker container start \
+	$(shell cat dist/toolgen/build-container-id)
+
+	docker container exec --user=root \
+	$(shell cat dist/toolgen/build-container-id) \
+	chown -R $(ghcup_user):$(ghcup_user) \
+	/home/$(ghcup_user)/checksource-gen
+
+	docker container exec \
+	$(shell cat dist/toolgen/build-container-id) \
+	rm -rf /home/$(ghcup_user)/checksource-gen/dist-newstyle
+
+	docker container exec \
+	-w /home/$(ghcup_user)/checksource-gen \
+	$(shell cat dist/toolgen/build-container-id) \
+	cabal v2-install --install-method=copy \
+	--overwrite-policy=always
+
+	docker container cp \
+	$(shell cat dist/toolgen/build-container-id)\
+	:/home/$(ghcup_user)/.cabal/bin/checksource-gen \
+	dist/toolgen/checksource-gen
+
+	docker container stop \
+	$(shell cat dist/toolgen/build-container-id)
+
+
 .PHONY: donothing
 donothing:
 
