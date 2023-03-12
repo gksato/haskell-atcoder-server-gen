@@ -169,9 +169,9 @@ dist/serverproto/docker-image-name: \
 
 	docker image build \
 	-t $$(cat dist/serverproto/docker-image-name) \
-	--build-arg GHCUP_IMG=\
-	"$$(cat dist/ghcup/docker-image-name)" \
+	--build-arg GHCUP_IMG="$$(cat dist/ghcup/docker-image-name)" \
 	--build-arg DEFAULT_MAIN_FILE="$(serverproto_main_fname)" \
+	--build-arg USERNAME="$(ghcup_user)" \
 	dist/serverproto
 
 .PHONY: serverproto
