@@ -246,7 +246,7 @@ dist/toolgen/build-container-id: \
 		dist/ghcup/docker-image-name
 	mkdir -p dist/toolgen
 	docker container create -it \
-	--name "haskell-atcoder-server-gen/toolgen-autogen:$$(uuidgen)" \
+	--name "haskell-atcoder-server-gen.toolgen-autogen.$$(uuidgen)" \
 	$(shell cat dist/ghcup/docker-image-name) \
 	> dist/toolgen/build-container-id
 
@@ -327,6 +327,178 @@ dist/toolgen/checksource-gen: \
 
 	docker container stop \
 	$(shell cat dist/toolgen/build-container-id)
+
+
+# serverproto-info
+
+dist/serverproto-info/license-report.md: \
+		dist/serverproto/docker-image-name \
+		dist/toolgen/cabal-plan
+
+	@mkdir -p dist/serverproto-info
+	@mkdir -p tmp/serverproto-info
+	@rm -rf dist/serverproto-info/licenses
+
+	docker container create -it \
+	--name "haskell-atcoder-server-gen.serverproto-info-autogen.\
+	$$(uuidgen)" \
+	$(shell cat dist/serverproto/docker-image-name) \
+	> tmp/serverproto-info/container-id
+
+	docker container start \
+	$$(cat tmp/serverproto-info/container-id)
+
+	docker container cp \
+	dist/toolgen/cabal-plan \
+	$$(cat tmp/serverproto-info/container-id):\
+	/home/$(ghcup_user)/cabal-plan
+
+	docker container exec --user=root \
+	$$(cat tmp/serverproto-info/container-id) \
+	chown $(ghcup_user):$(ghcup_user) cabal-plan
+
+	docker container exec \
+	$$(cat tmp/serverproto-info/container-id) \
+	/bin/bash -c "mkdir -p .cabal/bin \
+	&& mv cabal-plan .cabal/bin/ \
+	&& cd submission \
+	&& LANG=C.UTF-8 cabal-plan license-report main \
+	--licensedir=../licenses >../license-report.md"
+
+	docker container cp \
+	$$(cat tmp/serverproto-info/container-id)\
+	:/home/$(ghcup_user)/license-report.md \
+	dist/serverproto-info/license-report.md
+
+	docker container cp \
+	$$(cat tmp/serverproto-info/container-id)\
+	:home/$(ghcup_user)/licenses/. \
+	dist/serverproto-info/licenses
+
+	docker container stop \
+	$$(cat tmp/serverproto-info/container-id)
+
+	docker container rm \
+	$$(cat tmp/serverproto-info/container-id)
+
+	rm tmp/serverproto-info/container-id
+
+dist/serverproto-info/CheckSource.hs: \
+		dist/serverproto/docker-image-name \
+		dist/toolgen/checksource-gen
+
+	@mkdir -p dist/serverproto-info
+	@mkdir -p tmp/serverproto-info
+	@rm -rf dist/serverproto-info/licenses
+
+	docker container create -it \
+	--name "haskell-atcoder-server-gen.serverproto-info-autogen.\
+	$$(uuidgen)" \
+	$(shell cat dist/serverproto/docker-image-name) \
+	> tmp/serverproto-info/container-id
+
+	docker container start \
+	$$(cat tmp/serverproto-info/container-id)
+
+	docker container cp \
+	dist/toolgen/checksource-gen \
+	$$(cat tmp/serverproto-info/container-id):\
+	/home/$(ghcup_user)/checksource-gen
+
+	docker container exec --user=root \
+	$$(cat tmp/serverproto-info/container-id) \
+	chown $(ghcup_user):$(ghcup_user) checksource-gen
+
+	docker container exec \
+	$$(cat tmp/serverproto-info/container-id) \
+	/bin/bash -c "mkdir -p .cabal/bin \
+	&& mv checksource-gen .cabal/bin/ \
+	&& checksource-gen > CheckSource.hs"
+
+	docker container cp \
+	$$(cat tmp/serverproto-info/container-id)\
+	:/home/$(ghcup_user)/CheckSource.hs \
+	dist/serverproto-info/CheckSource.hs
+
+	docker container stop \
+	$$(cat tmp/serverproto-info/container-id)
+
+	docker container rm \
+	$$(cat tmp/serverproto-info/container-id)
+
+	rm tmp/serverproto-info/container-id
+
+
+# verify
+
+.PHONY: verify/checksource-pkgs
+verify/checksource-pkgs: \
+		dist/serverproto-info/CheckSource.hs \
+		src/serverproto/dependencies
+	@echo "checking discrepancies between CheckSource.hs and \
+	dependencies..."
+	@mkdir -p tmp/verify/checksource-pkgs
+
+	@grep -E -e '^-- ([A-Za-z]+-)+[0-9]+(.[0-9]+)*$$' \
+	dist/serverproto-info/CheckSource.hs \
+	| sed -E -e 's/^-- //' -e 's/-[0-9]+(.[0-9]+)*$$//' \
+	| sort > tmp/verify/checksource-pkgs/pkgs-CheckSource
+
+	@grep -oE -e "^([A-Za-z]+)(-[A-Za-z]+)*" \
+	src/serverproto/dependencies \
+	| sort > tmp/verify/checksource-pkgs/pkgs-dependencies
+
+	@cmp tmp/verify/checksource-pkgs/pkgs-CheckSource \
+	tmp/verify/checksource-pkgs/pkgs-dependencies
+
+	@echo "Hooray! No discrepancies found!"
+
+.PHONY: verify/checksource-exec
+verify/checksource-exec: \
+		dist/serverproto-info/CheckSource.hs \
+		dist/serverproto/docker-image-name
+	@echo "Building and executing CheckSource.hs..."
+
+	@mkdir -p tmp/verify/checksource-exec
+
+	docker container create -it \
+	--name "haskell-atcoder-server-gen.checksource-exec-autogen.\
+	$$(uuidgen)" \
+	--network none \
+	$(shell cat dist/serverproto/docker-image-name) \
+	> tmp/verify/checksource-exec/container-id
+
+	docker container start \
+	$$(cat tmp/verify/checksource-exec/container-id)
+
+	docker container cp \
+	dist/serverproto-info/CheckSource.hs \
+	$$(cat tmp/verify/checksource-exec/container-id):\
+	/home/$(ghcup_user)/submission/app/Main.hs
+
+	docker container exec --user=root \
+	$$(cat tmp/verify/checksource-exec/container-id) \
+	chown $(ghcup_user):$(ghcup_user) \
+	/home/$(ghcup_user)/submission/app/Main.hs
+
+	docker container exec \
+	$$(cat tmp/verify/checksource-exec/container-id) \
+	/bin/bash -c "cd submission \
+	&& cabal v2-install --offline --install-method=copy \
+	--installdir /home/$(ghcup_user) \
+	&& cd ~ && ./main"
+
+
+	docker container stop \
+	$$(cat tmp/verify/checksource-exec/container-id)
+
+	docker container rm \
+	$$(cat tmp/verify/checksource-exec/container-id)
+
+	rm tmp/verify/checksource-exec/container-id
+
+	@echo
+	@echo "Done!"
 
 
 .PHONY: donothing

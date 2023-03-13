@@ -27,7 +27,7 @@ genSourceWithExposedImports packages = TLazyB.toLazyText
      mainFct packages
   where
     moduleDecl = "module Main where\n\n\n"
-    mainFct = "\nmain :: IO ()\nmain = return ()\n"
+    mainFct = "\nmain :: Prelude.IO ()\nmain = Prelude.return ()\n"
     importQualified = "import qualified "
     newLine = TLazyB.singleton '\n'
 
