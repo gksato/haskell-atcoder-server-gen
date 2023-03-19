@@ -337,7 +337,6 @@ dist/serverproto-info/license-report.md: \
 
 	@mkdir -p dist/serverproto-info
 	@mkdir -p tmp/serverproto-info
-	@rm -rf dist/serverproto-info/licenses
 
 	docker container create -it \
 	--name "haskell-atcoder-server-gen.serverproto-info-autogen.\
@@ -363,17 +362,12 @@ dist/serverproto-info/license-report.md: \
 	&& mv cabal-plan .cabal/bin/ \
 	&& cd submission \
 	&& LANG=C.UTF-8 cabal-plan license-report main \
-	--licensedir=../licenses >../license-report.md"
+	>../license-report.md"
 
 	docker container cp \
 	$$(cat tmp/serverproto-info/container-id)\
 	:/home/$(ghcup_user)/license-report.md \
 	dist/serverproto-info/license-report.md
-
-	docker container cp \
-	$$(cat tmp/serverproto-info/container-id)\
-	:home/$(ghcup_user)/licenses/. \
-	dist/serverproto-info/licenses
 
 	docker container stop \
 	$$(cat tmp/serverproto-info/container-id)
