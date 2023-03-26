@@ -2,11 +2,12 @@
 
 sudo apt-get update
 sudo apt-get upgrade -y
-apt-get install -y REPLACE_GHCUP_APT_DEPENDENCY
+sudo apt-get install -y REPLACE_GHCUP_APT_DEPENDENCY
 
 curl --proto '=https' --tlsv1.2 -sSf https://get-ghcup.haskell.org | BOOTSTRAP_HASKELL_NONINTERACTIVE=1 BOOTSTRAP_HASKELL_GHC_VERSION=REPLACE_GHCVER BOOTSTRAP_HASKELL_CABAL_VERSION=REPLACE_CABALVER BOOTSTRAP_HASKELL_INSTALL_NO_STACK=1 sh
 source ~/.ghcup/env
 
+mkdir -p /judge
 cd /judge
 
 mkdir -p submission/app
@@ -27,6 +28,6 @@ echo "main = return () :: IO ()" > app/Main.hs
 
 cabal v2-update
 cabal v2-freeze
-cabal v2-build --only-dependencies
+cabal v2-build --upgrade-dependencies --only-dependencies
 
 rm app/Main.hs

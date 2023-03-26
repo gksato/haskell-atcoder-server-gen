@@ -310,6 +310,10 @@ dist/toolgen/checksource-gen: \
 	chown -R $(ghcup_user):$(ghcup_user) \
 	/home/$(ghcup_user)/checksource-gen
 
+	docker container exec --user=root \
+	$(shell cat dist/toolgen/build-container-id) \
+	apt-get install -y zlib1g-dev
+
 	docker container exec \
 	$(shell cat dist/toolgen/build-container-id) \
 	rm -rf /home/$(ghcup_user)/checksource-gen/dist-newstyle
