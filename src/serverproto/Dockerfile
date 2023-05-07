@@ -10,5 +10,5 @@ COPY --chown=${USERNAME}:${USERNAME} ${DEFAULT_MAIN_FILE} ./Main.hs
 WORKDIR ..
 COPY --chown=${USERNAME}:${USERNAME} ${CABAL_FILE} ./submission.cabal
 COPY --chown=${USERNAME}:${USERNAME} ${PROJ_FILE} ./cabal.project
-RUN cabal v2-update && cabal v2-freeze && cabal v2-build --upgrade-dependencies --only-dependencies
+RUN cabal v2-update && cabal v2-configure --flags="+atcoder" && cabal v2-freeze && cabal v2-build --only-dependencies
 WORKDIR /home/runner/

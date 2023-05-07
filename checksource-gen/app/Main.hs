@@ -11,6 +11,7 @@ import qualified Network.HTTP.Client.TLS as TLS
 import FetchCabal.WithPlan
 import qualified Data.Text.Lazy.IO as Text
 import GenSource (genSourceWithExposedImports)
+import qualified Cabal.Plan as Plan
 
 main :: IO ()
 main = do
@@ -20,6 +21,14 @@ main = do
   let deps = Set.toList
         $ ciLibDeps $ uComps rootUnit Map.! CompNameExe "main"
   mgr <- TLS.newTlsManager
-  pds <- mapM (askHackageForUnitPD' mgr pj . (pjUnits Map.!)) deps
-  Text.putStr $ genSourceWithExposedImports pds
+  pds <- mapM (askHackageForUnitPD' mgr pj)
+    $ filter (\ Plan.Unit { .. } -> case uPId of
+                 Plan.PkgId (Plan.PkgName pkgname) _
+                   -> pkgname /= "ghc-boot-th")
+    $ map (pjUnits Map.!) deps
+  Text.putStr
+    $ genSourceWithExposedImports pds
+    [("ghc-boot-th-9.4.4", ["GHC.LanguageExtensions.Type",
+            "GHC.ForeignSrcLang.Type",
+            "GHC.Lexeme"])]
   return ()

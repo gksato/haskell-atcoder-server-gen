@@ -8,24 +8,32 @@ import Distribution.Types.PackageId (PackageIdentifier(..))
 
 genSourceWithExposedImports
   :: [PackageDescription]
+  -> [(String, [String])]
   -> TLazy.Text
-genSourceWithExposedImports packages = TLazyB.toLazyText
+genSourceWithExposedImports pds others = TLazyB.toLazyText
   $ moduleDecl
   <> foldr
-     (\descr rest ->
-         "-- " <> TLazyB.fromString (prettyShow $ package descr)
+     (\(pname, modnames) rest ->
+         "-- " <> TLazyB.fromString pname
          <> newLine
          <> foldr
-            (\modl rest' ->
+            (\modname rest' ->
                importQualified
-               <> TLazyB.fromString (prettyShow modl)
+               <> TLazyB.fromString modname
                <> newLine
                <> rest')
             (newLine <> rest)
-            (maybe [] exposedModules $ library descr)
+            modnames
      )
-     mainFct packages
+     mainFct modLists
   where
+    modLists
+      = map (\ pdescr ->
+                (prettyShow $ package pdescr,
+                  map prettyShow $ maybe [] exposedModules
+                  $ library pdescr))
+        pds
+      ++ others
     moduleDecl = "module Main where\n\n\n"
     mainFct = "\nmain :: Prelude.IO ()\nmain = Prelude.return ()\n"
     importQualified = "import qualified "

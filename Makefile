@@ -481,10 +481,9 @@ verify/checksource-exec: \
 
 	docker container exec \
 	$$(cat tmp/verify/checksource-exec/container-id) \
-	/bin/bash -c "cd submission \
-	&& cabal v2-install --offline --install-method=copy \
-	--installdir /home/$(ghcup_user) \
-	&& cd ~ && ./main"
+	/bin/bash -c "cd submission && \
+	cabal v2-build --offline && \
+	cp $$(cabal list-bin main) ../ && cd .. && ./main"
 
 
 	docker container stop \

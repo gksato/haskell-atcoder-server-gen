@@ -15,6 +15,11 @@ build-type:         Simple
 common warnings
     ghc-options: -Wall
 
+flag atcoder
+    description:    Indicates this is on the AtCoder judge server
+    default:        False
+    manual:         True
+
 executable main
     import:           warnings
     main-is:          Main.hs
@@ -25,3 +30,5 @@ executable main
 
     hs-source-dirs:   app
     default-language: GHC2021
+    if flag(atcoder)
+      cpp-options: -DATCODER
