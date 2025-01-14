@@ -1,4 +1,4 @@
-FROM ubuntu:22.10
+FROM ubuntu:24.04
 
 ARG GHCVER="9.4.5"
 ARG CABALVER="3.8.1.0"
@@ -6,8 +6,8 @@ ARG GHCUP_APT_DEPENDENCY="build-essential curl libffi-dev libffi8ubuntu1 libgmp-
 ARG USERNAME="runner"
 
 RUN apt-get update && apt-get install -y curl && apt-get install -y --no-install-recommends $GHCUP_APT_DEPENDENCY
-RUN groupadd -g 1000 $USERNAME && \
-    useradd -m -s /bin/bash -u 1000 -g 1000 $USERNAME
+RUN groupadd -g 1001 $USERNAME && \
+    useradd -m -s /bin/bash -u 1001 -g 1001 $USERNAME
 USER $USERNAME
 WORKDIR /home/$USERNAME/
 RUN curl --proto '=https' --tlsv1.2 -sSf https://get-ghcup.haskell.org \
