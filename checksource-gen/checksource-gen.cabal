@@ -58,10 +58,10 @@ common warnings
 common dependencies
     build-depends:
         base ^>= 4.19.2.0,
-        http-client-tls ^>=0.3.6.1,
-        cabal-plan ^>=0.7.2.3,
-        containers ^>=0.6.7,
-        text ^>=2.0.1
+        http-client-tls,
+        cabal-plan,
+        containers,
+        text
 
 library
     -- Import common warning flags.
@@ -82,13 +82,13 @@ library
 
     -- Other library packages from which modules are imported.
     build-depends:
-        http-client ^>=0.7.13.1,
-        http-conduit ^>=2.3.8,
-        http-types ^>=0.12.3,
-        exceptions ^>=0.10.5,
-        Cabal-syntax ^>=3.8.1.0,
-        bytestring ^>=0.11.4.0,
-        aeson ^>=2.1.1
+        http-client,
+        http-conduit,
+        http-types,
+        exceptions,
+        Cabal-syntax,
+        bytestring,
+        aeson
 
     default-extensions:
         OverloadedStrings
