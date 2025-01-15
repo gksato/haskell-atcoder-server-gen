@@ -78,11 +78,11 @@ askHackageForGPD mgr pkg ver = do
 platformLinuxX64 :: Platform
 platformLinuxX64 = Platform X86_64 Linux
 
-ghc944 :: CompilerId
-ghc944 = CompilerId GHC (CVer.mkVersion [9,4,4])
+ghc984 :: CompilerId
+ghc984 = CompilerId GHC (CVer.mkVersion [9,8,4])
 
-compilerInfoGHC944 :: CompilerInfo
-compilerInfoGHC944 = unknownCompilerInfo ghc944 NoAbiTag
+compilerInfoGHC984 :: CompilerInfo
+compilerInfoGHC984 = unknownCompilerInfo ghc984 NoAbiTag
 
 mainLibSpec :: ComponentRequestedSpec
 mainLibSpec = OneComponentRequestedSpec $ CLibName defaultLibName
@@ -91,7 +91,7 @@ simpleFinalizePD :: FlagAssignment -> GenericPackageDescription
   -> Either [Dependency] (PackageDescription, FlagAssignment)
 simpleFinalizePD fa
   = finalizePD fa mainLibSpec (const True) platformLinuxX64
-    compilerInfoGHC944 []
+    compilerInfoGHC984 []
 
 type FlagNameString = String
 

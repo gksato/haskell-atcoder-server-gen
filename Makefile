@@ -2,8 +2,8 @@
 
 # Versions of GHC and cabal-install. See ghcup_apt_dependency.
 
-ghcver = 9.4.5
-cabalver = 3.8.1.0
+ghcver = 9.8.4
+cabalver = 3.12.1.0
 
 # Write what GHCup says it needs.
 # The exception to this is llvm: GHCup does not say it needs LLVM.
@@ -11,7 +11,7 @@ cabalver = 3.8.1.0
 # The LLVM version GHC requires depends on GHC's version,
 # so make sure adjust the version when you tweak GHC version!
 ghcup_apt_dependency = build-essential curl libffi-dev libffi8ubuntu1 \
-	libgmp-dev libgmp10 libncurses-dev libncurses6 libtinfo6 llvm-14
+	libgmp-dev libgmp10 libncurses-dev libncurses6 libtinfo6 llvm-15
 
 # default username for docker images. THIS CANNOT BE root.
 ghcup_user = runner

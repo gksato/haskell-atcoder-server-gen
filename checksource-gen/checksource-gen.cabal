@@ -57,7 +57,7 @@ common warnings
 
 common dependencies
     build-depends:
-        base ^>=4.17.0.0,
+        base ^>= 4.19.2.0,
         http-client-tls ^>=0.3.6.1,
         cabal-plan ^>=0.7.2.3,
         containers ^>=0.6.7,
@@ -148,5 +148,5 @@ test-suite hs-lib-installation-checksource-generator-test
 
     -- Test dependencies.
     build-depends:
-        base ^>=4.17.0.0,
+        base ^>= 4.19.2.0,
         checksource-gen
