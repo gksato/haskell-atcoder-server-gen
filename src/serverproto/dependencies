@@ -1,78 +1,78 @@
-Cabal
-Cabal-syntax
-QuickCheck
-adjunctions
-array
-attoparsec
-base
-bifunctors
-binary
-bitvec
-bytestring
-comonad
-containers
-contravariant
-deepseq
-directory
-distributive
-exceptions
-extra
-fgl
-filepath
-free
+Cabal ^>= 3.10.3.0
+Cabal-syntax ^>= 3.10.3.0
+QuickCheck ^>= 2.15.0.1
+adjunctions ^>= 4.4.2
+array ^>= 0.5.8.0
+attoparsec ^>= 0.14.4
+base ^>= 4.19.2.0
+bifunctors ^>= 5.6.2
+binary ^>= 0.8.9.1
+bitvec ^>= 1.1.5.0
+bytestring ^>= 0.12.1.0
+comonad ^>= 5.0.9
+containers ^>= 0.6.8
+contravariant ^>= 1.5.5
+deepseq ^>= 1.5.1.0
+directory ^>= 1.3.8.5
+distributive ^>= 0.6.2.1
+exceptions ^>= 0.10.7
+extra ^>= 1.8
+fgl ^>= 5.8.3.0
+filepath ^>= 1.4.301.0
+free ^>= 5.2
 ghc-bignum ==1.3
 ghc-boot-th ==9.8.4
 ghc-prim ^>=0.11.0
-hashable
-heaps
-indexed-traversable
-indexed-traversable-instances
-integer-gmp
-integer-logarithms
-kan-extensions
-lens
-linear-base
-list-t
-massiv
-megaparsec
-mono-traversable
-mtl
-mutable-containers
-mwc-random
-parallel
-parsec
-parser-combinators
-pretty
-primitive
-process
-profunctors
-psqueues
-random
-reflection
-regex-tdfa
-safe-exceptions
-scientific
-semialign
-semigroupoids
-split
-stm
-strict
-strict-lens
-tagged
-template-haskell
-text
-tf-random
-these
-these-lens
-time
-transformers
-trifecta
-unboxing-vector
-unix
-unordered-containers
-utility-ht
-vector
-vector-algorithms
-vector-stream
-vector-th-unbox
-xhtml
+hashable ^>= 1.5.0.0
+heaps ^>= 0.4.1
+indexed-traversable ^>= 0.1.4
+indexed-traversable-instances ^>= 0.1.2
+integer-gmp ^>= 1.1
+integer-logarithms ^>= 1.0.4
+kan-extensions ^>= 5.2.6
+lens ^>= 5.3.3
+linear-base ^>= 0.4.0
+list-t ^>= 1.0.5.7
+massiv ^>= 1.0.4.1
+megaparsec ^>= 9.7.0
+mono-traversable ^>= 1.0.21.0
+mtl ^>= 2.3.1
+mutable-containers ^>= 0.3.4.1
+mwc-random ^>= 0.15.1.0
+parallel ^>= 3.2.2.0
+parsec ^>= 3.1.17.0
+parser-combinators ^>= 1.3.0
+pretty ^>= 1.1.3.6
+primitive ^>= 0.9.0.0
+process ^>= 1.6.25.0
+profunctors ^>= 5.6.2
+psqueues ^>= 0.2.8.0
+random ^>= 1.2.1.3
+reflection ^>= 2.1.9
+regex-tdfa ^>= 1.3.2.2
+safe-exceptions ^>= 0.1.7.4
+scientific ^>= 0.3.8.0
+semialign ^>= 1.3.1
+semigroupoids ^>= 6.0.1
+split ^>= 0.2.5
+stm ^>= 2.5.3.1
+strict ^>= 0.5.1
+strict-lens ^>= 0.4.1
+tagged ^>= 0.8.9
+template-haskell ^>= 2.21.0.0
+text ^>= 2.1.1
+tf-random ^>= 0.5
+these ^>= 1.2.1
+these-lens ^>= 1.0.2
+time ^>= 1.12.2
+transformers ^>= 0.6.1.0
+trifecta ^>= 2.1.4
+unboxing-vector ^>= 0.2.0.0
+unix ^>= 2.8.6.0
+unordered-containers ^>= 0.2.20
+utility-ht ^>= 0.0.17.2
+vector ^>= 0.13.2.0
+vector-algorithms ^>= 0.9.0.3
+vector-stream ^>= 0.1.0.1
+vector-th-unbox ^>= 0.2.2
+xhtml ^>= 3000.2.2.1
