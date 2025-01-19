@@ -479,24 +479,25 @@ verify/checksource-exec: \
 	chown $(ghcup_user):$(ghcup_user) \
 	/home/$(ghcup_user)/submission/app/Main.hs
 
-	docker container exec \
+	(docker container exec \
 	$$(cat tmp/verify/checksource-exec/container-id) \
 	/bin/bash -c 'cd submission && \
 	cabal v2-build --offline && \
-	cp $$(cabal list-bin main) ../ && cd .. && ./main'
+	cp "$$(cabal list-bin main)" ../ && cd .. && ./main' \
+    && echo "CheckSource.hs has been executed successfully.") \
+	|| (echo "CheckSource.hs has failed to execute.")
 
+	@echo "Excess docker container is being removed..."
 
-	docker container stop \
+	@docker container stop \
 	$$(cat tmp/verify/checksource-exec/container-id)
 
-	docker container rm \
+	@docker container rm \
 	$$(cat tmp/verify/checksource-exec/container-id)
 
-	rm tmp/verify/checksource-exec/container-id
+	@rm tmp/verify/checksource-exec/container-id
 
-	@echo
-	@echo "Done!"
-
+	@echo "Docker container has been removed."
 
 .PHONY: donothing
 donothing:
