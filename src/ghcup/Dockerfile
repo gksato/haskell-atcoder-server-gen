@@ -1,11 +1,11 @@
 FROM ubuntu:22.10
 
-ARG GHCVER="9.4.4"
+ARG GHCVER="9.4.5"
 ARG CABALVER="3.8.1.0"
 ARG GHCUP_APT_DEPENDENCY="build-essential curl libffi-dev libffi8ubuntu1 libgmp-dev libgmp10 libncurses-dev libncurses5 libtinfo5 llvm-13"
 ARG USERNAME="runner"
 
-RUN apt-get update && apt-get install -y $GHCUP_APT_DEPENDENCY
+RUN apt-get update && apt-get install -y curl && apt-get install -y --no-install-recommends $GHCUP_APT_DEPENDENCY
 RUN groupadd -g 1000 $USERNAME && \
     useradd -m -s /bin/bash -u 1000 -g 1000 $USERNAME
 USER $USERNAME

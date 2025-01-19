@@ -34,7 +34,8 @@ genSourceWithExposedImports pds others = TLazyB.toLazyText
                   $ library pdescr))
         pds
       ++ others
-    moduleDecl = "module Main where\n\n\n"
+    moduleDecl = "{-# OPTIONS_GHC -Wno-unused-imports #-}\n" <>
+                 "module Main where\n\n\n"
     mainFct = "\nmain :: Prelude.IO ()\nmain = Prelude.return ()\n"
     importQualified = "import qualified "
     newLine = TLazyB.singleton '\n'

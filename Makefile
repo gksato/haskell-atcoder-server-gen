@@ -2,7 +2,7 @@
 
 # Versions of GHC and cabal-install. See ghcup_apt_dependency.
 
-ghcver = 9.4.4
+ghcver = 9.4.5
 cabalver = 3.8.1.0
 
 # Write what GHCup says it needs.
@@ -11,7 +11,7 @@ cabalver = 3.8.1.0
 # The LLVM version GHC requires depends on GHC's version,
 # so make sure adjust the version when you tweak GHC version!
 ghcup_apt_dependency = build-essential curl libffi-dev libffi8ubuntu1 \
-	libgmp-dev libgmp10 libncurses-dev libncurses5 libtinfo5 llvm-13
+	libgmp-dev libgmp10 libncurses-dev libncurses5 libtinfo5 llvm-14
 
 # default username for docker images. THIS CANNOT BE root.
 ghcup_user = runner
@@ -481,9 +481,9 @@ verify/checksource-exec: \
 
 	docker container exec \
 	$$(cat tmp/verify/checksource-exec/container-id) \
-	/bin/bash -c "cd submission && \
+	/bin/bash -c 'cd submission && \
 	cabal v2-build --offline && \
-	cp $$(cabal list-bin main) ../ && cd .. && ./main"
+	cp $$(cabal list-bin main) ../ && cd .. && ./main'
 
 
 	docker container stop \

@@ -28,7 +28,7 @@ main = do
     $ map (pjUnits Map.!) deps
   Text.putStr
     $ genSourceWithExposedImports pds
-    [("ghc-boot-th-9.4.4", ["GHC.LanguageExtensions.Type",
+    [("ghc-boot-th-9.4.5", ["GHC.LanguageExtensions.Type",
             "GHC.ForeignSrcLang.Type",
             "GHC.Lexeme"])]
   return ()
