@@ -270,8 +270,7 @@ dist/toolgen/cabal-plan: \
 	docker container exec \
 	$(shell cat dist/toolgen/build-container-id) \
 	cabal v2-install cabal-plan \
-	--constraint="cabal-plan +exe" \
-	--flag="+license-report" \
+	-f exe -f license-report \
 	--install-method=copy --overwrite-policy=always
 
 	docker container cp \
