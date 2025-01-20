@@ -32,7 +32,7 @@ main = do
     $ filter (\ Plan.Unit { .. } -> case uPId of
                  Plan.PkgId (Plan.PkgName pkgname) _
                    -> pkgname /= "ghc-boot-th")
-    $ map (\dep -> fromJust (Map.lookup dep pjUnits)) deps
+    $ map (pjUnits Map.!) deps
   Text.putStr
     $ genSourceWithExposedImports pds
     [("ghc-boot-th-9.8.4", ["GHC.LanguageExtensions.Type",
