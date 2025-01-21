@@ -5,6 +5,12 @@ ARG DEFAULT_MAIN_FILE="HelloHaskell.hs"
 ARG CABAL_FILE="submission.cabal"
 ARG PROJ_FILE="cabal.project"
 ARG USERNAME="runner"
+ARG HMATRIX_APT_DEPENDENCY="libgsl0-dev liblapack-dev libatlas-base-dev libglpk-dev"
+
+USER root
+RUN apt-get install -y --no-install-recommends $HMATRIX_APT_DEPENDENCY
+
+USER $USERNAME
 WORKDIR submission/app
 COPY --chown=${USERNAME}:${USERNAME} ${DEFAULT_MAIN_FILE} ./Main.hs
 WORKDIR ..

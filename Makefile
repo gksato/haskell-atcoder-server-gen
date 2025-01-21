@@ -13,6 +13,8 @@ cabalver = 3.12.1.0
 ghcup_apt_dependency = build-essential curl libffi-dev libffi8ubuntu1 \
 	libgmp-dev libgmp10 libncurses-dev libncurses6 libtinfo6 llvm-15
 
+hmatrix_apt_dependency = libgsl0-dev liblapack-dev libatlas-base-dev libglpk-dev
+
 # default username for docker images. THIS CANNOT BE root.
 ghcup_user = runner
 
@@ -215,6 +217,7 @@ dist/installsteps/install.sh: \
 	-e 's/REPLACE_GHCVER/$(ghcver)/' \
 	-e 's/REPLACE_CABALVER/$(cabalver)/' \
 	-e 's/REPLACE_GHCUP_APT_DEPENDENCY/$(ghcup_apt_dependency)/' \
+	-e 's/REPLACE_HMATRIX_APT_DEPENDENCY/$(hmatrix_apt_dependency)/' \
 	src/installsteps/install.sh.template \
 	> dist/installsteps/install.sh
 

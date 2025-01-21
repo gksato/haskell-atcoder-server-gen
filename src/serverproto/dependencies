@@ -1,6 +1,7 @@
 Cabal ^>=3.14.1.1
 Cabal-syntax ^>=3.14.1.0
 QuickCheck ^>=2.15.0.1
+ac-library-hs ^>=1.1.0.0
 adjunctions ^>=4.4.2
 array ==0.5.8.0
 attoparsec ^>=0.14.4
@@ -25,6 +26,11 @@ ghc-boot-th ==9.8.4
 ghc-prim ==0.11.0
 hashable ^>=1.5.0.0
 heaps ^>=0.4.1
+hmatrix ^>=0.20.2
+hmatrix-glpk ^>=0.19.0.0
+hmatrix-gsl ^>=0.19.0.1
+hmatrix-special ^>=0.19.0.0
+ilist ^>=0.4.0.1
 indexed-traversable ^>=0.1.4
 indexed-traversable-instances ^>=0.1.2
 integer-gmp ^>=1.1
@@ -35,6 +41,7 @@ linear-base ^>=0.4.0
 list-t ^>=1.0.5.7
 massiv ^>=1.0.4.1
 megaparsec ^>=9.7.0
+monad-memo ^>=0.5.4
 mono-traversable ^>=1.0.21.0
 mtl ^>=2.3.1
 mutable-containers ^>=0.3.4.1
@@ -73,6 +80,9 @@ unordered-containers ^>=0.2.20
 utility-ht ^>=0.0.17.2
 vector ^>=0.13.2.0
 vector-algorithms ^>=0.9.0.3
+vector-split ^>=1.0.0.3
 vector-stream ^>=0.1.0.1
 vector-th-unbox ^>=0.2.2
+wide-word ^>=0.1.6.0
+witherable ^>=0.5
 xhtml ^>=3000.2.2.1
