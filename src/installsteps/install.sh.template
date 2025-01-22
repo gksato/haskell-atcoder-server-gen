@@ -8,7 +8,7 @@ sudo apt-get install -y --no-install-recommends REPLACE_GHCUP_APT_DEPENDENCY
 curl --proto '=https' --tlsv1.2 -sSf https://get-ghcup.haskell.org | BOOTSTRAP_HASKELL_NONINTERACTIVE=1 BOOTSTRAP_HASKELL_GHC_VERSION=REPLACE_GHCVER BOOTSTRAP_HASKELL_CABAL_VERSION=REPLACE_CABALVER BOOTSTRAP_HASKELL_INSTALL_NO_STACK=1 sh
 source ~/.ghcup/env
 
-RUN apt-get install -y --no-install-recommends REPLACE_HMATRIX_APT_DEPENDENCY
+sudo apt-get install -y --no-install-recommends REPLACE_HMATRIX_APT_DEPENDENCY
 
 mkdir -p submission/app
 
