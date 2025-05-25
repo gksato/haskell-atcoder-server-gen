@@ -1,7 +1,7 @@
 Cabal ^>=3.14.2.0
 Cabal-syntax ^>=3.14.2.0
 QuickCheck ^>=2.15.0.1
-ac-library-hs ^>=1.4.0.0
+ac-library-hs ^>=1.5.0.0
 adjunctions ^>=4.4.3
 array ==0.5.8.0
 attoparsec ^>=0.14.4
@@ -20,7 +20,7 @@ exceptions ^>=0.10.7
 extra ^>=1.8
 fgl ^>=5.8.3.0
 filepath ^>=1.4.301.0
-flow ^>=2.0.0.7
+flow ^>=2.0.0.9
 free ^>=5.2
 ghc-bignum ==1.3
 ghc-boot-th ==9.8.4
@@ -57,7 +57,7 @@ profunctors ^>=5.6.2
 psqueues ^>=0.2.8.1
 random ^>=1.2.1.3
 reflection ^>=2.1.9
-regex-tdfa ^>=1.3.2.3
+regex-tdfa ^>=1.3.2.4
 safe-exceptions ^>=0.1.7.4
 scientific ^>=0.3.8.0
 semialign ^>=1.3.1
