@@ -1,7 +1,7 @@
 Cabal ^>=3.14.2.0
 Cabal-syntax ^>=3.14.2.0
 QuickCheck ^>=2.15.0.1
-ac-library-hs ^>=1.5.0.0
+ac-library-hs ^>=1.5.1.0
 adjunctions ^>=4.4.3
 array ==0.5.8.0
 attoparsec ^>=0.14.4
@@ -40,7 +40,7 @@ kan-extensions ^>=5.2.6
 lens ^>=5.3.4
 linear-base ^>=0.5.0
 list-t ^>=1.0.5.7
-massiv ^>=1.0.4.1
+massiv ^>=1.0.5.0
 megaparsec ^>=9.7.0
 monad-memo ^>=0.5.4
 mono-traversable ^>=1.0.21.0
