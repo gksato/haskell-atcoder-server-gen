@@ -2,8 +2,8 @@
 
 # Versions of GHC and cabal-install. See ghcup_apt_dependency.
 
-ghcver = 9.8.4
-cabalver = 3.12.1.0
+ghcver = 9.10.2.20250817
+cabalver = 3.14.2.0
 
 # Write what GHCup says it needs.
 # The exception to this is llvm: GHCup does not say it needs LLVM.
@@ -11,7 +11,7 @@ cabalver = 3.12.1.0
 # The LLVM version GHC requires depends on GHC's version,
 # so make sure adjust the version when you tweak GHC version!
 ghcup_apt_dependency = build-essential curl libffi-dev libffi8ubuntu1 \
-	libgmp-dev libgmp10 libncurses-dev libncurses6 libtinfo6 llvm-15
+	libgmp-dev libgmp10 libncurses-dev libncurses6 libtinfo6 llvm-15 clang-15
 
 hmatrix_apt_dependency = libgsl0-dev liblapack-dev libatlas-base-dev libglpk-dev
 
@@ -271,14 +271,15 @@ dist/toolgen/cabal-plan: \
 	apt-get install -y zlib1g-dev
 
 	docker container exec \
-	$(shell cat dist/toolgen/build-container-id) \
+	$(shell cat dist/toolgen/build-container-id) /bin/bash -c \
+	"cabal v2-update && \
 	cabal v2-install cabal-plan \
 	-f exe -f license-report \
-	--install-method=copy --overwrite-policy=always
+	--install-method=copy --overwrite-policy=always"
 
 	docker container cp \
 	$(shell cat dist/toolgen/build-container-id)\
-	:/home/$(ghcup_user)/.cabal/bin/cabal-plan \
+	:/home/$(ghcup_user)/.local/bin/cabal-plan \
 	dist/toolgen/cabal-plan
 
 	docker container stop \
@@ -323,13 +324,14 @@ dist/toolgen/checksource-gen: \
 
 	docker container exec \
 	-w /home/$(ghcup_user)/checksource-gen \
-	$(shell cat dist/toolgen/build-container-id) \
+	$(shell cat dist/toolgen/build-container-id) /bin/bash -c \
+	"cabal v2-update && \
 	cabal v2-install --install-method=copy \
-	--overwrite-policy=always
+	--overwrite-policy=always"
 
 	docker container cp \
 	$(shell cat dist/toolgen/build-container-id)\
-	:/home/$(ghcup_user)/.cabal/bin/checksource-gen \
+	:/home/$(ghcup_user)/.local/bin/checksource-gen \
 	dist/toolgen/checksource-gen
 
 	docker container stop \

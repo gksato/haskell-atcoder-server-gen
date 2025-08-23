@@ -8,3 +8,5 @@ optimization: 2
 package *
     compiler: ghc
     ghc-options: -fllvm -Wall
+
+allow-newer: ilist:base,directory:time,Cabal-syntax:time,Cabal:time,ac-library-hs:random
