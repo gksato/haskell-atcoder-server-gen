@@ -1,0 +1,6 @@
+cradle:
+  cabal:
+    - path: "./src"
+      component: "lib:checksource-gen"
+    - path: "./app"
+      component: "exe:checksource-gen"

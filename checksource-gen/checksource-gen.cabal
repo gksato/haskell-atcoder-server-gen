@@ -20,7 +20,7 @@ name:               checksource-gen
 -- PVP summary:     +-+------- breaking API changes
 --                  | | +----- non-breaking API additions
 --                  | | | +--- code changes with no API change
-version:            0.1.0.0
+version:            0.2.0.0
 
 -- A short (one-line) description of the package.
 synopsis:
@@ -57,11 +57,12 @@ common warnings
 
 common dependencies
     build-depends:
-        base ^>= 4.19.2.0,
+        base >= 4.19 && < 4.21,
         http-client-tls ^>= 0.3.6.4,
         cabal-plan ^>= 0.7.5.0,
-        containers  ^>= 0.6.8,
-        text ^>= 2.1.1
+        containers  ^>= 0.7,
+        text ^>= 2.1.1,
+        process ^>= 1.6.9
 
 library
     -- Import common warning flags.
@@ -73,6 +74,9 @@ library
         FetchCabal
         FetchCabal.WithPlan
         GenSource
+        Config
+        FetchGHCPkg
+        App
 
     -- Modules included in this library but not exported.
     -- other-modules:
