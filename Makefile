@@ -279,7 +279,7 @@ dist/toolgen/cabal-plan: \
 
 	docker container cp \
 	$(shell cat dist/toolgen/build-container-id)\
-	:/home/$(ghcup_user)/.local/bin/cabal-plan \
+	:/home/$(ghcup_user)/.cabal/bin/cabal-plan \
 	dist/toolgen/cabal-plan
 
 	docker container stop \
@@ -331,7 +331,7 @@ dist/toolgen/checksource-gen: \
 
 	docker container cp \
 	$(shell cat dist/toolgen/build-container-id)\
-	:/home/$(ghcup_user)/.local/bin/checksource-gen \
+	:/home/$(ghcup_user)/.cabal/bin/checksource-gen \
 	dist/toolgen/checksource-gen
 
 	docker container stop \

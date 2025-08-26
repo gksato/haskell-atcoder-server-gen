@@ -13,6 +13,7 @@ WORKDIR /home/$USERNAME/
 RUN curl --proto '=https' --tlsv1.2 -sSf https://get-ghcup.haskell.org \
     | BOOTSTRAP_HASKELL_NONINTERACTIVE=1 \
     BOOTSTRAP_HASKELL_MINIMAL=1 sh && \
+    mkdir -p /home/$USERNAME/.cabal && \
     . /home/$USERNAME/.ghcup/env && \
     ghcup install cabal ${CABALVER} && ghcup set cabal ${CABALVER} && \
     ghcup config add-release-channel prereleases && \
