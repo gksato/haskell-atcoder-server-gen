@@ -14,5 +14,7 @@ config :: Config
 config = defaultConfig { workarounds = Map.fromList [
       ("ghc-boot-th", FetchGHCPkg),
       ("base", FetchGHCPkg),
+      ("ghc-internal", FetchGHCPkg),
+      ("ghc-experimental", FetchGHCPkg),
       ("text", AddFlagSettings [("simdutf", False)])
   ]}
