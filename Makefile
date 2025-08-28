@@ -5,11 +5,14 @@
 ghcver = 9.10.2.20250817
 cabalver = 3.14.2.0
 
-# Write what GHCup says it needs.
-# The exception to this is llvm: GHCup does not say it needs LLVM.
-# However we need it to enable LLVM backend.
-# The LLVM version GHC requires depends on GHC's version,
-# so make sure adjust the version when you tweak GHC version!
+# This consists of:
+# * GHCup's dependency, which is equivalently:
+#   * what you see when you install GHCup on the target OS, or
+#   * the exact output of `ghcup tool-requirements`
+# * `ca-certificates`, which `curl` requires to work with HTTPS properly
+# * `llvm` and `clang`, which GHC requires to support the LLVM backend
+# Of those, the versions of `llvm` and `clang` depend on the GHC version,
+# so need to be adjusted when the GHC version changes.
 ghcup_apt_dependency = build-essential ca-certificates curl libffi-dev libffi8ubuntu1 \
 	libgmp-dev libgmp10 libncurses-dev libncurses6 libtinfo6 llvm-15 clang-15
 
