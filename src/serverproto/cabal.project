@@ -10,4 +10,17 @@ package *
     compiler: ghc
     ghc-options: -fllvm -Wall
 
-allow-newer: ilist:base,directory:time,Cabal-syntax:time,Cabal:time,ac-library-hs:random,witherable:containers,semialign:containers,scientific:containers,parallel:containers,megaparsec:containers,foldl:containers,linear-generics:containers,indexed-traversable:containers,hashable:containers
+allow-newer: ilist:base,
+             directory:time,
+             Cabal-syntax:time,
+             Cabal:time,
+             ac-library-hs:random,
+             witherable:containers,
+             semialign:containers,
+             scientific:containers,
+             parallel:containers,
+             megaparsec:containers,
+             foldl:containers,
+             linear-generics:containers,
+             indexed-traversable:containers,
+             hashable:containers
