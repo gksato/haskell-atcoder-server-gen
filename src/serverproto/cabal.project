@@ -2,6 +2,7 @@ packages: ./submission.cabal
 
 constraints: bitvec +libgmp,
              -- clock +llvm,
+             text -simdutf,
              vector-algorithms +llvm
 optimization: 2
 
