@@ -2,7 +2,6 @@
 
 sudo apt-get update
 sudo apt-get upgrade -y
-sudo apt-get install -y curl
 sudo apt-get install -y --no-install-recommends REPLACE_GHCUP_APT_DEPENDENCY
 
 curl --proto '=https' --tlsv1.2 -sSf https://get-ghcup.haskell.org | BOOTSTRAP_HASKELL_NONINTERACTIVE=1 BOOTSTRAP_HASKELL_MINIMAL=1 sh
