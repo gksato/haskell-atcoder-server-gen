@@ -10,7 +10,7 @@ cabalver = 3.14.2.0
 # However we need it to enable LLVM backend.
 # The LLVM version GHC requires depends on GHC's version,
 # so make sure adjust the version when you tweak GHC version!
-ghcup_apt_dependency = build-essential curl libffi-dev libffi8ubuntu1 \
+ghcup_apt_dependency = build-essential ca-certificates curl libffi-dev libffi8ubuntu1 \
 	libgmp-dev libgmp10 libncurses-dev libncurses6 libtinfo6 llvm-15 clang-15
 
 hmatrix_apt_dependency = libgsl0-dev liblapack-dev libatlas-base-dev libglpk-dev
@@ -214,10 +214,10 @@ dist/installsteps/install.sh: \
 	-e '//d' \
 	-e '/REPLACE_PKG_CABAL/r dist/serverproto/submission.cabal' \
 	-e '//d' \
-	-e 's/REPLACE_GHCVER/$(ghcver)/' \
-	-e 's/REPLACE_CABALVER/$(cabalver)/' \
-	-e 's/REPLACE_GHCUP_APT_DEPENDENCY/$(ghcup_apt_dependency)/' \
-	-e 's/REPLACE_HMATRIX_APT_DEPENDENCY/$(hmatrix_apt_dependency)/' \
+	-e 's/REPLACE_GHCVER/$(ghcver)/g' \
+	-e 's/REPLACE_CABALVER/$(cabalver)/g' \
+	-e 's/REPLACE_GHCUP_APT_DEPENDENCY/$(ghcup_apt_dependency)/g' \
+	-e 's/REPLACE_HMATRIX_APT_DEPENDENCY/$(hmatrix_apt_dependency)/g' \
 	src/installsteps/install.sh.template \
 	> dist/installsteps/install.sh
 

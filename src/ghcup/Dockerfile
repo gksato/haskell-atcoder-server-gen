@@ -2,10 +2,10 @@ FROM ubuntu:24.04
 
 ARG GHCVER="9.10.2.20250817"
 ARG CABALVER="3.12.1.0"
-ARG GHCUP_APT_DEPENDENCY="build-essential curl libffi-dev libffi8ubuntu1 libgmp-dev libgmp10 libncurses-dev libncurses6 libtinfo6 llvm-15"
+ARG GHCUP_APT_DEPENDENCY="build-essential ca-certificates curl libffi-dev libffi8ubuntu1 libgmp-dev libgmp10 libncurses-dev libncurses6 libtinfo6 llvm-15"
 ARG USERNAME="runner"
 
-RUN apt-get update && apt-get install -y curl && apt-get install -y --no-install-recommends $GHCUP_APT_DEPENDENCY
+RUN apt-get update && apt-get install -y --no-install-recommends $GHCUP_APT_DEPENDENCY
 RUN groupadd -g 1001 $USERNAME && \
     useradd -m -s /bin/bash -u 1001 -g 1001 $USERNAME
 USER $USERNAME
