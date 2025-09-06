@@ -1,8 +1,8 @@
 packages: ./submission.cabal
 
 constraints: bitvec +libgmp,
-             clock +llvm,
-             text -simdutf,
+             -- clock +llvm,
+             text +simdutf,
              vector-algorithms +llvm
 optimization: 2
 
@@ -10,11 +10,7 @@ package *
     compiler: ghc
     ghc-options: -fllvm -Wall
 
-allow-newer: ilist:base,
-             directory:time,
-             Cabal-syntax:time,
-             Cabal:time,
-             witherable:containers,
+allow-newer: witherable:containers,
              semialign:containers,
              scientific:containers,
              parallel:containers,

@@ -2,7 +2,7 @@
 
 # Versions of GHC and cabal-install. See ghcup_apt_dependency.
 
-ghcver = 9.10.2.20250817
+ghcver = 9.8.4
 cabalver = 3.14.2.0
 
 # This consists of:
@@ -10,11 +10,11 @@ cabalver = 3.14.2.0
 #   * what you see when you install GHCup on the target OS, or
 #   * the exact output of `ghcup tool-requirements`
 # * `ca-certificates`, which `curl` requires to work with HTTPS properly
-# * `llvm` and `clang`, which GHC requires to support the LLVM backend
+# * `llvm` (and `clang`, which GHC >= 9.10 requires to support the LLVM backend)
 # Of those, the versions of `llvm` and `clang` depend on the GHC version,
 # so need to be adjusted when the GHC version changes.
 ghcup_apt_dependency = build-essential ca-certificates curl libffi-dev libffi8ubuntu1 \
-	libgmp-dev libgmp10 libncurses-dev libncurses6 libtinfo6 llvm-15 clang-15
+	libgmp-dev libgmp10 libncurses-dev libncurses6 libtinfo6 llvm-15
 
 hmatrix_apt_dependency = libgsl0-dev liblapack-dev libatlas-base-dev libglpk-dev
 

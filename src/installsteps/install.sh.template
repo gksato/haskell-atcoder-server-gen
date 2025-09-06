@@ -8,7 +8,6 @@ curl --proto '=https' --tlsv1.2 -sSf https://get-ghcup.haskell.org | BOOTSTRAP_H
 mkdir -p ~/.cabal
 source ~/.ghcup/env
 ghcup install cabal REPLACE_CABALVER && ghcup set cabal REPLACE_CABALVER
-ghcup config add-release-channel prereleases
 ghcup install ghc REPLACE_GHCVER && ghcup set ghc REPLACE_GHCVER
 
 sudo apt-get install -y --no-install-recommends REPLACE_HMATRIX_APT_DEPENDENCY
