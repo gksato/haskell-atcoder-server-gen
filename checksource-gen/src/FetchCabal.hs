@@ -21,13 +21,8 @@ import Distribution.Parsec.Warning (PWarning)
 import qualified Distribution.Types.Version as CVer
 import Data.List.NonEmpty (NonEmpty)
 import Distribution.Parsec.Error (PError)
-import Distribution.System (Platform (Platform), Arch (X86_64), OS (Linux))
-import Distribution.Compiler (CompilerId (CompilerId), CompilerFlavor (GHC), unknownCompilerInfo, AbiTag (NoAbiTag), CompilerInfo)
 import Distribution.Types.ComponentRequestedSpec (ComponentRequestedSpec (OneComponentRequestedSpec))
-import Distribution.PackageDescription (ComponentName(CLibName), defaultLibName, Dependency, FlagAssignment, PackageDescription,  mkFlagAssignment, mkFlagName)
-import Distribution.PackageDescription.Configuration (finalizePD)
-import Data.Bifunctor (Bifunctor(first))
-import Data.Either (fromRight)
+import Distribution.PackageDescription (ComponentName(CLibName), defaultLibName)
 import Data.Map (Map)
 import Data.Aeson.TH (Options(..), deriveJSON, defaultOptions)
 import Data.Char (toLower)
@@ -75,38 +70,12 @@ askHackageForGPD mgr pkg ver = do
     Right res -> return (res, warns)
 
 
-platformLinuxX64 :: Platform
-platformLinuxX64 = Platform X86_64 Linux
-
-ghc984 :: CompilerId
-ghc984 = CompilerId GHC (CVer.mkVersion [9,8,4])
-
-compilerInfoGHC984 :: CompilerInfo
-compilerInfoGHC984 = unknownCompilerInfo ghc984 NoAbiTag
 
 mainLibSpec :: ComponentRequestedSpec
 mainLibSpec = OneComponentRequestedSpec $ CLibName defaultLibName
 
-simpleFinalizePD :: FlagAssignment -> GenericPackageDescription
-  -> Either [Dependency] (PackageDescription, FlagAssignment)
-simpleFinalizePD fa
-  = finalizePD fa mainLibSpec (const True) platformLinuxX64
-    compilerInfoGHC984 []
 
 type FlagNameString = String
-
-askHackageForPD
-  :: Manager
-  -> PackageString
-  -> Maybe VersionString
-  -> [(FlagNameString, Bool)]
-  -> IO (PackageDescription, FlagAssignment, [PWarning])
-askHackageForPD mgr pkg ver flgs = do
-  (gpd, warns) <- askHackageForGPD mgr pkg ver
-  let fa = mkFlagAssignment $ map (first mkFlagName) flgs
-  let (res, fa') = fromRight (error "Impossible")
-        $ simpleFinalizePD fa gpd
-  return (res, fa', warns)
 
 data PackagePreferrence
   = PPNormal | PPUnpreferred | PPDeprecated

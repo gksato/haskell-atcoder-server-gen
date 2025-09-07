@@ -8,7 +8,7 @@ ARG USERNAME="runner"
 ARG HMATRIX_APT_DEPENDENCY="libgsl0-dev liblapack-dev libatlas-base-dev libglpk-dev"
 
 USER root
-RUN apt-get install -y --no-install-recommends $HMATRIX_APT_DEPENDENCY
+RUN apt-get update && apt-get install -y --no-install-recommends $HMATRIX_APT_DEPENDENCY
 
 USER $USERNAME
 WORKDIR submission/app

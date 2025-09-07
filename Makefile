@@ -3,14 +3,17 @@
 # Versions of GHC and cabal-install. See ghcup_apt_dependency.
 
 ghcver = 9.8.4
-cabalver = 3.12.1.0
+cabalver = 3.14.2.0
 
-# Write what GHCup says it needs.
-# The exception to this is llvm: GHCup does not say it needs LLVM.
-# However we need it to enable LLVM backend.
-# The LLVM version GHC requires depends on GHC's version,
-# so make sure adjust the version when you tweak GHC version!
-ghcup_apt_dependency = build-essential curl libffi-dev libffi8ubuntu1 \
+# This consists of:
+# * GHCup's dependency, which is equivalently:
+#   * what you see when you install GHCup on the target OS, or
+#   * the exact output of `ghcup tool-requirements`
+# * `ca-certificates`, which `curl` requires to work with HTTPS properly
+# * `llvm` (and `clang`, which GHC >= 9.10 requires to support the LLVM backend)
+# Of those, the versions of `llvm` and `clang` depend on the GHC version,
+# so need to be adjusted when the GHC version changes.
+ghcup_apt_dependency = build-essential ca-certificates curl libffi-dev libffi8ubuntu1 \
 	libgmp-dev libgmp10 libncurses-dev libncurses6 libtinfo6 llvm-15
 
 hmatrix_apt_dependency = libgsl0-dev liblapack-dev libatlas-base-dev libglpk-dev
@@ -214,10 +217,10 @@ dist/installsteps/install.sh: \
 	-e '//d' \
 	-e '/REPLACE_PKG_CABAL/r dist/serverproto/submission.cabal' \
 	-e '//d' \
-	-e 's/REPLACE_GHCVER/$(ghcver)/' \
-	-e 's/REPLACE_CABALVER/$(cabalver)/' \
-	-e 's/REPLACE_GHCUP_APT_DEPENDENCY/$(ghcup_apt_dependency)/' \
-	-e 's/REPLACE_HMATRIX_APT_DEPENDENCY/$(hmatrix_apt_dependency)/' \
+	-e 's/REPLACE_GHCVER/$(ghcver)/g' \
+	-e 's/REPLACE_CABALVER/$(cabalver)/g' \
+	-e 's/REPLACE_GHCUP_APT_DEPENDENCY/$(ghcup_apt_dependency)/g' \
+	-e 's/REPLACE_HMATRIX_APT_DEPENDENCY/$(hmatrix_apt_dependency)/g' \
 	src/installsteps/install.sh.template \
 	> dist/installsteps/install.sh
 
@@ -271,10 +274,11 @@ dist/toolgen/cabal-plan: \
 	apt-get install -y zlib1g-dev
 
 	docker container exec \
-	$(shell cat dist/toolgen/build-container-id) \
+	$(shell cat dist/toolgen/build-container-id) /bin/bash -c \
+	"cabal v2-update && \
 	cabal v2-install cabal-plan \
 	-f exe -f license-report \
-	--install-method=copy --overwrite-policy=always
+	--install-method=copy --overwrite-policy=always"
 
 	docker container cp \
 	$(shell cat dist/toolgen/build-container-id)\
@@ -323,9 +327,10 @@ dist/toolgen/checksource-gen: \
 
 	docker container exec \
 	-w /home/$(ghcup_user)/checksource-gen \
-	$(shell cat dist/toolgen/build-container-id) \
+	$(shell cat dist/toolgen/build-container-id) /bin/bash -c \
+	"cabal v2-update && \
 	cabal v2-install --install-method=copy \
-	--overwrite-policy=always
+	--overwrite-policy=always"
 
 	docker container cp \
 	$(shell cat dist/toolgen/build-container-id)\

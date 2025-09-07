@@ -7,38 +7,44 @@ import Distribution.Pretty ( prettyShow )
 import Distribution.Types.PackageId (PackageIdentifier(..))
 
 genSourceWithExposedImports
-  :: [PackageDescription]
-  -> [(String, [String])]
+  :: [(String, [String])]
   -> TLazy.Text
-genSourceWithExposedImports pds others = TLazyB.toLazyText
+genSourceWithExposedImports modLists = TLazyB.toLazyText
   $ moduleDecl
   <> foldr
-     (\(pname, modnames) rest ->
-         "-- " <> TLazyB.fromString pname
-         <> newLine
-         <> foldr
-            (\modname rest' ->
-               importQualified
-               <> TLazyB.fromString modname
-               <> newLine
-               <> rest')
-            (newLine <> rest)
-            modnames
-     )
-     mainFct modLists
+      (\(pname, modnames) rest ->
+          "-- " <> TLazyB.fromString pname
+          <> newLine
+          <> foldr
+             (\modname rest' ->
+                importQualified
+                <> TLazyB.fromString modname
+                <> newLine
+                <> rest')
+             (newLine <> rest)
+             modnames
+      )
+      mainFct modLists
   where
-    modLists
-      = map (\ pdescr ->
-                (prettyShow $ package pdescr,
-                  map prettyShow $ maybe [] exposedModules
-                  $ library pdescr))
-        pds
-      ++ others
     moduleDecl = "{-# OPTIONS_GHC -Wno-unused-imports #-}\n" <>
                  "module Main where\n\n\n"
     mainFct = "\nmain :: Prelude.IO ()\nmain = Prelude.return ()\n"
     importQualified = "import qualified "
     newLine = TLazyB.singleton '\n'
+
+genSourceWithExposedImportsFromPDs
+  :: [PackageDescription]
+  -> [(String, [String])]
+  -> TLazy.Text
+genSourceWithExposedImportsFromPDs pds others =
+  genSourceWithExposedImports modLists
+  where
+    modLists =
+      map (\pdescr ->
+            (prettyShow $ package pdescr,
+             map prettyShow $ maybe [] exposedModules (library pdescr)))
+          pds
+      ++ others
 
 genLicenses
   :: [PackageDescription]

@@ -35,13 +35,23 @@ finalizePDWithPlan
   -> Plan.Unit
   -> GenericPackageDescription
   -> Either [Dependency] (PackageDescription, FlagAssignment)
-finalizePDWithPlan PlanJson { .. } Plan.Unit { .. }
+finalizePDWithPlan pj unit =
+  finalizePDWithPlanAndExtraFlags pj unit []
+
+finalizePDWithPlanAndExtraFlags
+  :: PlanJson
+  -> Plan.Unit
+  -> [(String, Bool)] -- ^ extra flags to set
+  -> GenericPackageDescription
+  -> Either [Dependency] (PackageDescription, FlagAssignment)
+finalizePDWithPlanAndExtraFlags PlanJson {pjCompilerId, pjArch, pjOs} Plan.Unit {uFlags} extraFlags
   = finalizePD flagAss mainLibSpec (const True) platform compilerInfo []
   where
     flagAss = mkFlagAssignment
       $ map (\ (Plan.FlagName !name, !val) ->
                (mkFlagName $ Text.unpack name, val))
-      $ Map.toList uFlags
+        (Map.toList uFlags)
+        ++ map (\ (name, val) -> (mkFlagName name, val)) extraFlags
     platform = Platform arch os
     arch = classifyArch Permissive $ Text.unpack pjArch
     os = classifyOS Permissive $ Text.unpack pjOs
@@ -51,7 +61,6 @@ finalizePDWithPlan PlanJson { .. } Plan.Unit { .. }
     compilerVer = CVer.mkVersion pjCompilerVer
     Plan.PkgId (Plan.PkgName pjCompilerName) (Plan.Ver pjCompilerVer)
       = pjCompilerId
-
 
 askHackageForUnitPD
   :: Manager
@@ -64,6 +73,18 @@ askHackageForUnitPD mgr pj unit = do
         $ finalizePDWithPlan pj unit gpd
   return (res, fa', warns)
 
+askHackageForUnitPDWithExtraFlags
+  :: Manager
+  -> PlanJson
+  -> Plan.Unit
+  -> [(String, Bool)]
+  -> IO (PackageDescription, FlagAssignment, [PWarning])
+askHackageForUnitPDWithExtraFlags mgr pj unit extraFlags = do
+  (gpd, warns) <- askHackageForUnitGPD mgr unit
+  let (res, fa') = fromRight (error "Impossible")
+        $ finalizePDWithPlanAndExtraFlags pj unit extraFlags gpd
+  return (res, fa', warns)
+
 askHackageForUnitPD'
   :: Manager
   -> PlanJson
@@ -71,4 +92,14 @@ askHackageForUnitPD'
   -> IO PackageDescription
 askHackageForUnitPD' mgr pj unit = do
   (res, _, _) <- askHackageForUnitPD mgr pj unit
+  return res
+
+askHackageForUnitPDWithExtraFlags'
+  :: Manager
+  -> PlanJson
+  -> Plan.Unit
+  -> [(String, Bool)]
+  -> IO PackageDescription
+askHackageForUnitPDWithExtraFlags' mgr pj unit extraFlags = do
+  (res, _, _) <- askHackageForUnitPDWithExtraFlags mgr pj unit extraFlags
   return res
